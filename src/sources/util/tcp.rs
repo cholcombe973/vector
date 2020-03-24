@@ -12,7 +12,7 @@ use std::{
     time::{Duration, Instant},
 };
 use stream_cancel::Tripwire;
-use tokio::{
+use tokio01::{
     codec::{Decoder, FramedRead},
     net::TcpListener,
     prelude::AsyncRead,
@@ -62,7 +62,7 @@ pub trait TcpSource: Clone + Send + 'static {
 
     fn build_event(
         &self,
-        frame: <Self::Decoder as tokio::codec::Decoder>::Item,
+        frame: <Self::Decoder as tokio01::codec::Decoder>::Item,
         host: Option<Bytes>,
     ) -> Option<Event>;
 
@@ -166,7 +166,7 @@ fn handle_stream(
         .forward(out)
         .map(|_| debug!("connection closed."))
         .map_err(|_| warn!("Error received while processing TCP source"));
-    tokio::spawn(handler.instrument(span));
+    tokio01::spawn(handler.instrument(span));
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
